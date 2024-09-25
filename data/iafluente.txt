@@ -1,0 +1,449 @@
+---
+title: Ambientes virtuais
+description: Aprenda a criar e gerir ambientes virtuais para seus programas Python usando conda e pip.
+---
+
+# Ambientes virtuais
+
+A modularidade é uma das grandes maravilhas do software.
+
+Por exemplo, para construir um modelo de machine learning (ML), no mínimo é preciso ler dados, manipulá-los, definir um modelo, treiná-lo e avaliá-lo.
+
+A beleza da modularidade está no fato de não ser necessário resolver novamente problemas que já foram resolvidos.
+
+Não é preciso começar do zero para construir o modelo de ML. Existem soluções para cada uma das etapas mencionadas individualmente. Você pode importar bibliotecas como `pandas`, `numpy`, `scikit-learn`, dentre tantas outras e *compor* a sua solução.
+
+A modularidade traz consigo uma consequência importante:
+
+> O código que você escreve/executa (quase) nunca vive isolado. Ele possui dependências, isto é, vive em um **ambiente**.
+
+
+Se você pensa em construir algo que vai ser utilizado por um longo período e/ou que vai envolver um número significativo de pessoas, o ambiente em que seu programa vai ser executado deve ser uma das suas primeiras considerações.
+
+Neste tutorial, vou te ensinar a gerir o ambiente utilizado pelo seu programa em Python.
+
+## O que é o “ambiente”?
+
+Neste tutorial, utilizo o termo “ambiente” para me referir ao conjunto de dependências (a grosso modo, bibliotecas) que o seu programa em Python utiliza ao ser executado.
+
+Por exemplo, se você acabou de instalar o Python no seu computador, você utilizará o ambiente padrão, chamado de `base`.
+
+## Como interagir com o ambiente?
+
+Existem diferentes formas de interagir com o ambiente Python, sendo a mais comum pela linha de comando — Terminal, no Mac e Linux, ou PowerShell, no Windows.
+
+Perceba que, na imagem acima, há `base` escrito entre parênteses. Isso indica que estamos no ambiente padrão.
+
+Para instalar bibliotecas em Python, uma das ferramentas mais utilizadas é o [`pip`](https://pypi.org/project/pip/){ target = "_blank" }. Por exemplo, se você executar:
+
+```bash
+pip install numpy==1.2
+```
+
+a versão 1.2 de `numpy` será instalada. Se estamos no ambiente `base`, é nele que a instalação está sendo feita.
+
+Para conferir que a versão especificada de `numpy` realmente foi instalada, basta executar o comando `pip show`:
+
+```bash
+pip show numpy
+```
+
+Para desinstalar a biblioteca, basta executar:
+
+```bash
+pip uninstall numpy
+```
+
+## Ambientes virtuais
+
+Na última seção, vimos como interagir com o ambiente `base` utilizando o `pip` para instalar e desinstalar bibliotecas.
+
+Se você trabalhasse sozinho e o seu objetivo fosse rodar um único programa algumas poucas vezes, você poderia continuar usando o ambiente `base` sem grandes problemas.
+
+Porém, na prática, um software é construído por mais de uma pessoa. Além disso, a ideia é que um programa seja executado um número indeterminado de vezes.
+
+??? question "Você entende o desafio de continuar usando o ambiente `base` nesse contexto?"
+
+    Se cada desenvolvedor rodar o código no *seu* ambiente `base` — cada um com versões de bibliotecas diferentes — é muito provável que inconsistências e erros apareçam. Seria impossível trabalhar em equipe.
+
+    Além disso, se o código fosse executado muitas e muitas vezes e atualizássemos a versão de alguma das dependências sem muito cuidado, é quase certo que ele eventualmente parasse de funcionar.
+
+
+Isso motiva a necessidade de se utilizar **ambientes virtuais**.
+
+> Ambientes virtuais são ambientes Python isolados uns dos outros. Em vez de sempre utilizar o ambiente `base`, você pode criar um ambiente virtual para cada projeto: cada um com as bibliotecas e versões esperadas pelo programa específico.
+
+Por exemplo, se você tem um projeto que utiliza `pandas==1.4.4` e outro que utiliza `pandas==1.2`, não há problema algum! Basta criar ambientes virtuais para cada projeto, instalar as versões de `pandas` correspondente e executar os programas no respectivo ambiente.
+
+Ambientes virtuais possibilitam a colaboração, porque cada desenvolvedor pode criar um ambiente virtual idêntico em sua respectiva máquina.
+
+## Gerindo ambientes virtuais com `conda`
+
+[Conda](https://docs.conda.io/en/latest/){ target = "_blank" } e [venv](https://docs.python.org/pt-br/3/library/venv.html){ target = "_blank" } são as ferramentas frequentemente utilizadas para gerir ambientes virtuais em Python. O passo-a-passo de utilização das duas ferramentas é bem semelhante. Neste texto, vou mostrar como gerenciar um ambiente virtual com conda.
+
+Para isso, assumo que você seguiu os passos de instalação especificados [aqui](https://docs.continuum.io/free/anaconda/install/){ target = "_blank" }.
+
+Vamos ao passo-a-passo:
+
+1. **Criar**. Para criar um ambiente, basta usar o comando conda create. Por exemplo, para criar um ambiente chamado iafluente, basta executar seguinte no terminal:
+
+    ```bash
+    conda create -n iafluente
+    ```
+
+    Se você quiser ser ainda mais preciso e especificar a versão de Python nesse ambiente (neste caso, Python 3.9), você pode executar:
+
+    ```bash
+    conda create -n iafluente python=3.9
+    ```
+
+2. **Ativar**. Logo após a criação, o ambiente ainda não está ativado. Você consegue ver qual ambiente está ativado vendo o nome entre parênteses no terminal.
+
+    ```bash
+    (base) ~ »
+    ```
+
+    No caso, ainda é o ambiente `base`. Para ativar o ambiente que acabamos de criar, basta executar:
+
+    ```bash
+    conda activate iafluente
+    ```
+
+    Depois do comando acima, você deve ver o terminal com:
+
+    ```bash
+    (iafluente) ~ »
+    ```
+
+    Isso significa que o ambiente está ativado!
+
+3. **Instalar bibliotecas**. Com o ambiente ativado, tudo que você instalar naquela janela do terminal será instalado no ambiente virtual `iafluente`. Por exemplo, se você executar:
+
+    ```bash
+    pip install numpy==1.2
+    ```
+
+    a versão 1.2 de `numpy` será instalada no seu ambiente `iafluente` —  e não nos demais ambientes que você tem, como o ambiente `base`.
+
+    Ainda com o ambiente ativado, se você executar um programa Python, este rodará no ambiente que criamos. Por exemplo, para executar um script chamado `meu_programa.py` no ambiente, basta:
+
+    ```bash
+    python meu_programa.py
+    ```
+
+    Alternativamente, se você quiser usar um Jupyter Notebook neste ambiente, basta executar com o ambiente ativado:
+
+    ```bash
+    jupyter notebook
+    ```
+    ??? warning "Encontrou o erro `command not found: jupyter`?"
+
+        Esse erro nos diz que o módulo `jupyter` não está instalado no ambiente que estamos utilizando — chamado de `iafluente`. Para resolvê-lo, basta instalar o jupyter com `pip install jupyter` e em seguida executar jupyter notebook novamente.
+
+4. **Desativar**. Para sair do ambiente e voltar para o ambiente `base`, basta usar:
+
+    ```bash
+    conda deactivate
+    ```
+
+    Depois do comando acima você deve ver `base` novamente entre parênteses no terminal.
+
+5. **Reativar**. Para voltar ao ambiente `iafluente` ou qualquer outro que você já tenha criado, basta usar o `conda activate` com o nome do ambiente, como no passo 2.
+
+Com os comandos acima, você consegue fazer 99% das coisas que na prática se precisa fazer com um ambiente virtual.
+
+## Arquivos `requirements.txt`
+
+Ao longo de todo o texto, instalamos bibliotecas no ambiente uma a uma. Isto é, para instalar `numpy==1.2`, executamos `pip install numpy==1.2`. Depois, para instalar `pandas==1.4`, executamos `pip install pandas==1.4`.
+
+Esse processo é lento e propenso a erros. Por isso, quase todo projeto tem um arquivo chamado `requirements.txt`.
+
+Este arquivo de texto contém todas as dependências necessárias para executar o código do projeto. Um exemplo de um bom arquivo `requirements.txt` é:
+
+```txt
+numpy==1.2
+pandas==1.4
+scikit-learn==1.0
+```
+
+???+ success "Porque o arquivo `requirements.txt` acima é *bom*"
+    Algumas características que considero boas no arquivo acima:
+
+    1. Está organizado em ordem alfabética. Projetos complexos podem ter arquivos `requirements.txt` extensos. Nestes casos, seguir a ordem alfabética facilita encontrar. Quando necessário, comentários também são bem-vindos.
+
+    2.  As versões das dependências estão especificadas. As versões são imprescindíveis para garantir que os ambientes sejam reproduzíveis.
+
+    3. Não está inflado com “dependências das dependências”. Algumas pessoas utilizam o comando `pip freeze > requirements.txt` para gerar o arquivo `requirements.txt` automaticamente. Quando isso é feito, é comum que o arquivo fique demasiadamente inflado. Existem alternativas melhores, como [`pipreqs`](https://pypi.org/project/pipreqs/){ target = "_blank" }, porém, muitas vezes o melhor é manter o arquivo `requirements.txt` manualmente.
+
+Para instalar tudo que está especificado no `requirements.txt` basta ativar o ambiente (passo 2, na seção anterior) e em seguida:
+
+```bash
+pip install -r requirements.txt
+```
+
+%%%
+
+---
+title: Código para produção
+description: O código para produção é bem diferente do código experimental. Aprenda como.
+---
+
+# Código para produção
+
+O impulso para *criar* certamente é uma das características mais humanas. O processo de dar vida a algo que outrora existia apenas na imaginação é prazeroso e o mundo está repleto de meios que nos possibilitam exercer esse impulso tão primitivo.
+
+Um desses meios é o código.
+
+O código é um meio extremamente maleável e uma sensação comum que se tem ao programar é a de que é possível construir qualquer coisa imaginável, livre das muitas limitações impostas pelo mundo físico. Porém, assim como para outros meios, existem construções e *construções*.
+
+No mundo físico, uma coisa é construir um puxadinho; outra, é construir a [ponte Golden Gate](https://pt.wikipedia.org/wiki/Ponte_Golden_Gate){ target = "_blank" }.
+
+Por mais óbvio que pareça, no software, não é diferente. Todavia, é comum encontrar pessoas que estão claramente construindo puxadinho atrás de puxadinho, mas que acham que estão no processo de construir arranha-céus. Dentre os resultados dessa dissonância estão desde projetos lentos e que falham a estresses evitáveis.
+
+O campo de gestão de projetos e desenvolvimento de software é vasto e existem centenas de livros inteiros dedicados ao assunto. Neste tutorial, vamos explorar apenas um pequeno primeiro passo na direção da construção de bom software: uma mudança de perspectiva, do código experimental para o código para produção.
+
+## Código experimental
+
+O código que chamo de experimental é o análogo, em software, ao puxadinho, na construção civil.
+
+O código experimental resolve problema que ele se propõe a solucionar. Porém, há pouca ou nenhuma preocupação com o código em si. Toda a atenção está voltada para as informações que ele é capaz de produzir.
+
+Como exemplo de código experimental, cito praticamente todo o código que escrevi durante a minha formação acadêmica. Nesse contexto, programava para gerar gráficos e tabelas para artigos científicos; para gerar artefatos que utilizaria nos trabalhos.
+
+Contanto que fossem evitadas bizarrices, pouco importava se o código estava bem estruturado, se haviam funções mal escritas, código duplicado ou algum teste. O objetivo do programa estava sendo cumprido: gerar os resultados.
+
+Acredito que esse modo de programar predomine no meio acadêmico. É também a forma que se acaba programando quando se aprende a programar sozinho. Isso acontece porque, nesses contextos, o código já costuma nascer com uma data de expiração: a entrega do trabalho ou o fim do projeto pessoal. Passada essa data, o código é praticamente descartado e não há grande preocupação em reutilizá-lo.
+
+Por inércia, o código experimental é também o predominante quando se entra no mercado de trabalho e várias consequências negativas — incluindo o famoso [débito técnico](https://en.wikipedia.org/wiki/Technical_debt){ target = "_blank" } — aparecem quando se aplica a mentalidade do código experimental com o intuito de construir algo sólido.
+
+## Código para produção
+
+Para construir algo sólido, é necessário o que chamo de *código para produção*.
+
+No início de seu livro “[The Software Craftsman](https://www.oreilly.com/library/view/the-software-craftsman/9780134052625/){ target = "_blank" }”, Sandro Mancuso narra um ponto de inflexão que aconteceu no início da sua carreira. Assim que recebeu sua primeira tarefa fazendo parte de um time que admirava, trabalhou duro para completá-la no menor tempo possível a fim de impressionar o seu chefe. No processo, também fez questão de escrever trechos de código difíceis de decifrar — para mostrar quão proficiente ele era como desenvolvedor.
+
+Porém, para sua surpresa, quando mostrou seu código para o chefe, em vez de elogios, foi recebido com várias perguntas diretas como[^1]:
+
+- "Está vendo este bloco de código? Se você pensasse um pouco mais, conseguiria reduzi-lo de 8 para 2 linhas."
+- "Você pensou que os seus colegas de trabalho, quando forem modificar essa parte do código, talvez não tenham o mesmo tanto de contexto que você tem agora? Como você se sentiria se não soubesse nada sobre essa parte, mas tivesse que mantê-la?"
+- "Por que você repetiu este bloco em vários lugares?"
+- "Você sabe quão desrespeitoso é isso? (…) Imagina como seria difícil entender o código todo se todo mundo decidisse mostrar o quão inteligente ele(a) é? Imagine milhares ou até milhões de linhas escritas assim."
+
+e a lista continua.
+
+Como lição final, o chefe fala uma frase marcante:
+
+> *Como* é feito é tão importante quanto fazer.
+
+Esse é o espírito do código para produção.
+
+Quando o objetivo é realmente *construir* com código, a forma com que se alcançam os resultados é tão importante quanto os resultados em si. Isso acontece porque, diferente do código experimental, o código para produção não nasce com uma data de validade: ele está em constante evolução, é mantido por muitas pessoas, e é esperado que seja executado um número indeterminado de vezes, servindo uma quantidade grande de usuários.
+
+Se você quer construir algo sólido com software, você precisa se esforçar para produzir esse tipo de código. Isso envolve uma preocupação com o [ambiente de execução do programa para reprodutibilidade](ambientes-virtuais.md){ target = "_blank" }, um esforço contínuo para escrever código de forma clara — lembrando que se está trabalhando em equipe e que o código deve evoluir no futuro — testes, documentação, dentre várias outras atividades. Em suma, como o próprio livro de Sandro sugere: tornar-se um artesão de software, que se importa com a sua obra.
+
+Citei que costumava escrever majoritariamente código experimental e, hoje, considero estar em um ponto bem melhor do que o que comecei. Além dos conselhos óbvios como estudar constantemente, aprender com os comentários de pessoas mais experientes, e tentar replicar padrões que observo em bons códigos (de bibliotecas open-source ou da empresa em que trabalho), acredito que a atividade que mais me ajudou a melhorar a qualidade do código que escrevo foi frequentemente refatorar blocos de código que escrevi. Assim como o primeiro rascunho de um texto dificilmente vai ser bom, a primeira versão do código que você escrever dificilmente vai ser clara. Reler algumas vezes e se esforçar para melhorar uma parcela de código já funcional faz maravilhas.
+
+??? question " O que é refatoração?"
+
+    De acordo com Martin Fowler, no livro “[Refatoração: aperfeiçoando o design de códigos existentes](https://www.amazon.com.br/Refatora%C3%A7%C3%A3o-Aperfei%C3%A7oando-Design-C%C3%B3digos-Existentes/dp/8575227246){ target = "_blank" }”, a “refatoração é uma modificação feita na estrutura interna do software para deixá-lo mais fácil de compreender e menos custoso para alterar, **sem** que seu comportamento observável seja alterado”. Além disso, o autor cita que, quando se está programando, frequentemente alternamos entre duas atividades distintas: a de acrescentar funcionalidades e a de refatorar. Quando se refatora, o objetivo não é acrescentar funcionalidades: é apenas reestruturar o código. Pessoalmente, gosto dessa imagem de alternância e tento mantê-la em mente no dia-a-dia.
+
+
+## Momento certo
+
+Por fim, é importante lembrar que existem situações que clamam pelo código experimental e outras pelo código para produção. Em alguns contextos, é natural que se escreva algo sem a intenção de reutilização, para produzir alguns resultados rápidos. Em outros, deve-se trabalhar em equipe para construir algo para longo prazo. Use os dois modos com responsabilidade, ciente dos trade-offs inerentes a cada um.
+
+[^1]: Tradução livre.
+
+%%%
+
+---
+title: Modelos baseline
+description: Aprenda a construir modelos baseline, uma peça chave no desenvolvimento em ML.
+---
+
+# Modelos baseline
+
+Modelos *baseline* são fundamentais em qualquer projeto de *machine learning* (ML). O problema é que geralmente uma de duas coisas acontece:
+
+1. ou eles são completamente negligenciados;
+2. ou são feitos de qualquer jeito, o que os tornam inúteis.
+
+Neste tutorial, vamos explorar o uso de modelos baseline em ML.
+
+## O que é um modelo baseline?
+
+De acordo com [este post](https://blog.ml.cmu.edu/2020/08/31/3-baselines/){ target = "_blank" } da Carnegie Mellon University,
+
+> um modelo baseline é um modelo **simples** que possui resultados **razoáveis** e que **não requer muito tempo** **ou expertise** para construir.[^1]
+
+Vamos analisar cada parte dessa definição.
+
+Um modelo baseline é **simples**. É importante começar simples para construir intuição sobre o problema e realmente entendê-lo. Além disso, trabalhar com modelos simples ajuda a encontrar bugs e validar hipóteses iniciais.
+
+Os resultados do modelo baseline são **razoáveis**. Eles não são perfeitos e você provavelmente não vai usá-lo como a solução final [implantada em produção](/padroes-de-disponibilizacao){ target = "_blank" }. No outro extremo, também é importante tomar cuidado para não escolher um modelo qualquer que tenha resultados muito ruins. Se não, você provavelmente perderá tempo desenvolvendo um modelo que não te ajudará em nada.
+
+Finalmente, a construção de um modelo baseline **não requer muito tempo**. O modelo baseline é somente o ponto de partida que te ajudará bastante nos estágios posteriores de desenvolvimento.
+
+## Por que modelos baselines são úteis?
+
+Após ler a seção anterior, você deve estar se perguntando: dado que o tempo é um recurso escasso, por que gastá-lo construindo um modelo que não será utilizado como solução final?
+
+A resposta tem a ver com a estrutura do processo de desenvolvimento de modelos de ML.
+
+O processo de desenvolvimento em ML é iterativo. Os insights que aparecem em uma iteração informam as decisões da próxima. Além disso, a velocidade de iteração é um fator crítico para os times de ML e ela dita quão bem eles navegam de protótipos para produtos.
+
+Como os modelos baseline são rápidos de implementar, eles dão um pontapé inicial no ciclo de desenvolvimento. Não importa se ele não vai ser a solução final. Os insights aprendidos nas iterações iniciais são preciosos e podem pagar bons dividendos no futuro.
+
+Os modelos baseline também são ótimas ferramentas para aumentar o entendimento dos dados, encontrar bugs e validar hipóteses. Alguns profissionais chegam a dizer que "um modelo baseline leva apenas 10% do tempo para ser desenvolvido, mas ajuda a percorrer 90% do caminho para alcançar bons resultados".
+
+Por fim, os modelos baseline fornecem um senso de progresso. Em muitas áreas da ciência, o progresso é incremental e, em ML, não é diferente. “Quando perdemos baselines acuradas, perdemos nossa habilidade de medir o progresso ao longo do tempo”[^1], como diz Smerity em [neste post](https://smerity.com/articles/2017/baselines_need_love.html){ target = "_blank" }.
+
+As soluções de ML não devem ser mais complexas do que precisam. Isso só pode ser garantido se existir uma forma sistemática de medir o progresso.
+
+## Como usar modelos baseline na prática?
+
+Agora que você entende o que são modelos baseline e está convencido de que eles são úteis, é hora de aprender como usá-los na prática.
+
+Dividimos esse processo em cinco etapas, mas nem todos os problemas requerem todas elas.
+
+### **1. Modelo aleatório**
+
+Depois de entender o problema e ter um conjunto de dados em mãos, o primeiro passo no ciclo de desenvolvimento de ML costuma ser a análise exploratória de dados (*EDA*, em inglês). Esta é a etapa em que você se familiariza com os dados brutos para entender o tipo de padrões que seu modelo aprenderá eventualmente a explorar.
+
+Nessa fase, também é útil fazer algumas contas rápidas que te fornecem **limites inferiores** para o desempenho que você deve esperar. Normalmente, a conta feita é a do desempenho do modelo aleatório (na literatura, chamado de *chance*).
+
+Por exemplo, se você está diante de um problema de classificação binária e os seus dados são perfeitamente balanceados (isto é, metade são da classe 0 e a outra metade da classe 1), um modelo aleatório teria uma acurácia de 50%. Isto aconteceria porque se para cada dado o modelo previsse uma das classes aleatoriamente[^2], ele acertaria metade. Portanto, espera-se que qualquer modelo que você desenvolva, supere este desempenho.
+
+O exemplo anterior pode parecer trivial. Todavia, na prática, os dados são frequentemente desbalanceados. Dessa forma, não é raro que se espere uma acurácia na faixa dos 80-90% (ou até mais) para modelos aleatórios ou que prevejam sempre a classe majoritária.
+
+Vale a pena gastar alguns minutos calculando suas métricas de desempenho mais importantes para um modelo aleatório. Qualquer modelo considerado a partir desse momento deve superar esse desempenho. Essa é a primeira linha de referência.
+
+### **2. Modelo baseado em regras**
+
+Muitos dos problemas que hoje são resolvidos com ML, no passado, eram resolvidos com regras. Dessa forma, antes de recorrer ao ML, quando possível, você pode (e deve) explorar soluções baseadas em regras e avaliar como elas se saem.
+
+Por exemplo, se você está trabalhando com classificação de sinais de áudio, antes de pular de cabeça nas redes neurais convolucionais ([CNN](https://pt.wikipedia.org/wiki/Rede_neural_convolucional){ target = "_blank" }), vale a pena explorar a área de processamento de sinais e entender como era feita a classificação de tais sinais com base em [*features*](https://en.wikipedia.org/wiki/Feature_(machine_learning)){ target="_blank" } projetadas por especialistas (como [MFCC](https://en.wikipedia.org/wiki/Mel-frequency_cepstrum){ target = "_blank" }).
+
+Não há garantia de que existam soluções baseadas em regras para o problema que você quer resolver. No entanto, se existirem, elas certamente te trarão insights valiosos.
+
+### **3. Modelo de ML simples**
+
+É hora de escolher um modelo de ML simples para começar. Lembre-se, a ideia não é encontrar uma solução perfeita logo de cara, mas sim começar a iterar rapidamente pelas diferentes etapas do desenvolvimento de ML.
+
+Quando estamos falando de *simplicidade* de modelos de ML, existem duas variáveis que podemos explorar: a **representação dos dados** e a **arquitetura do modelo**.
+
+Em dados tabulares (estruturados), a representação dos dados não costuma ser um grande problema. Porém, quando se está trabalhando com texto, séries temporais, imagens, por exemplo, existem muitas formas de processar os dados e construir a representação que o modelo vai utilizar. Nesta etapa, dê preferência para representações mais simples, baseadas em conhecimento do domínio (como *features*) em vez de representações aprendidas (como [*word embeddings*](https://en.wikipedia.org/wiki/Word_embedding){ _target="_blank" } ou convoluções em cima dos dados brutos).
+
+Quanto à arquitetura do modelo, é comum começar com modelos como [regressão linear](https://pt.wikipedia.org/wiki/Regress%C3%A3o_linear){ target="_blank" }, [regressão logística](https://pt.wikipedia.org/wiki/Regress%C3%A3o_log%C3%ADstica){ target="_blank" } e [árvores *gradient-boosted*](https://en.wikipedia.org/wiki/Gradient_boosting){ target="_blank" }. Alguns profissionais também começam com modelos pré-treinados famosos, bem estabelecidos na literatura, como [ResNet](https://en.wikipedia.org/wiki/Residual_neural_network){ target="_blank" } para imagens e variates do [BERT](https://en.wikipedia.org/wiki/BERT_(language_model)){ target="_blank" } para processamento de linguagem natural (NLP).
+
+### **4. Limites do modelo de ML simples**
+
+Com um modelo simples em mãos, é hora de encontrar o seu limite. Isso significa tentar extrair todo o suco que esse modelo pode dar. Isso vai ser feito testando hipóteses, debugando, regularizando, ajustando hiper parâmetros etc.
+
+Esse processo de melhora do modelo simples te familiarizará com os dados e revelará as limitações dessa modelagem inicial escolhida. Além disso, o desempenho desse modelo estabelecerá um nível forte que você deve superar nas suas iterações futuras.
+
+### **5. Modelos de ML complexos**
+
+Modelos complexos não devem ser construídos só por serem complexos. Na verdade, eles devem ser usados por sua ampla capacidade de representação. Na etapa anterior, você chegou no limite da modelagem simples e isso deve ter te dado uma ideia das suas limitações.
+
+Agora, o objetivo é aumentar a complexidade do modelo **um componente por vez** para superar as limitações mapeadas. Nesse processo, analisar sistematicamente os erros cometidos pelo modelo (*error analysis*) é fundamental para que, a cada etapa, você esteja ciente dos compromissos que está fazendo.
+
+Além disso, lembre-se dos princípios da IA centrada em dados ([*data-centric AI*](https://mitsloan.mit.edu/ideas-made-to-matter/why-its-time-data-centric-artificial-intelligence){ target="_blank" }). Os modelos de ML podem ser vistos como "sumários estatísticos" dos dados. Dessa forma, cultivar um bom dataset de treinamento, encontrando mais dados que ajudem a evidenciar padrões a serem aprendidos, é muitas vezes preferível a aumentar a complexidade do modelo.
+
+<br>
+
+O progresso rápido em IA/ML faz com que seja tentador começar a trabalhar com modelos complexos. Porém, esses modelos são difíceis de debugar, interpretar e muitas vezes nem são necessários para resolver o problema real de interesse. Dessa forma, no processo de desenvolvimento, é importante manter os pés no chão e começar com os modelos baseline.
+
+O progresso em ML é incremental. Modelos baseline são essenciais para estabelecer padrões e mensurar se estamos caminhando na direção correta. Lembre-se: um bom modelo baseline te leva longe; um modelo de baseline fraco desperdiça o seu tempo.[^3]
+
+
+[^1]: Tradução livre.
+[^2]: Assumindo uma distribuição uniforme.
+[^3]: Este tutorial foi modificado a partir de um post que escrevi no [blog do Openlayer](https://www.openlayer.com/blog/post/baseline-models){ target = "_blank" }.
+
+%%%
+
+---
+title: Padrões de disponibilização de modelos de ML
+description: Entenda como modelos de ML são implantados (deployed) e servidos para aplicações.
+---
+
+# Padrões de disponibilização de modelos
+
+Muitos cientistas de dados gostam de utilizar [notebooks Jupyter](https://jupyter.org/){ target = "_blank" } para treinar e interagir com modelos de machine learning (ML).
+
+Apesar de convenientes durante a fase de experimentação, para utilizar ML como uma dentre muitas das peças de um sistema, a interação com os modelos precisa se dar de outra forma que não pelos notebooks.
+
+Na prática, depois de treinados, os modelos são implantados em produção (*deployed*, em inglês). Esses modelos são então servidos para as aplicações, isto é, disponibilizados para que as aplicações possam utilizá-los.
+
+Neste tutorial, vamos discutir os dois principais padrões de servir modelos de ML para aplicações: o padrão [online](#padrao-online) e o em [batch](#padrao-em-batch).
+
+## Exemplos de aplicações
+
+Antes de entrar nos detalhes de cada um dos padrões, vamos descrever duas aplicações que utilizam ML. Ter esses exemplos em mente ajuda a entender o porquê de existirem padrões diferentes.
+
+**Aplicação 1: detecção de transações fraudulentas**
+
+Uma empresa provedora de cartões de crédito desenvolveu um modelo que detecta transações fraudulentas. Esse modelo é acionado toda vez que uma transação está sendo realizada, por exemplo quando uma pessoa paga sua conta em um restaurante utilizando a máquina de cartão de crédito. Espera-se que esse modelo classifique a transação como fraudulenta ou não em uma questão de instantes, para que consiga bloquear transações que julgue fraudulentas a tempo.
+
+**Aplicação 2: recomendação de filmes**
+
+Uma empresa de streaming desenvolve modelos de ML que fazem recomendações de filmes para seus usuários. Um usuário desse sistema não espera que suas recomendações sejam atualizadas várias vezes ao dia — na verdade, espera que as recomendações não mudem com tanta frequência, se não, vão parecer aleatórias. Por outro lado, é importante que as recomendações sejam atualizadas periodicamente, demonstrando que o sistema está constantemente aprendendo as preferências de seus usuários.
+
+??? question "Você consegue pensar nas diferenças entre os dois sistemas do ponto de vista de ML?"
+
+    Pense em:
+
+    - quantas vezes o modelo de ML é acionado em um dia típico;
+    - quantos dados o modelo processa cada vez que é acionado;
+    - consequências de uma falha no modelo;
+    - como os resultados de cada modelo seriam salvos e utilizados pela aplicação.
+
+Note que apesar de ambas as aplicações usarem modelos de ML, a forma como esses modelos devem ser utilizados parece ser diferente para cada uma. Isso acontece porque as expectativas que cercam as aplicações são distintas e, naturalmente, as variáveis a serem otimizadas para cada uma delas mudam.
+
+Vamos agora explorar os dois principais padrões de disponibilização de modelos para aplicações.
+
+## Padrão online
+
+O padrão online é aquele em que o modelo está preparado para retornar suas predições instantes depois de ser acionado. Esse padrão também é conhecido como síncrono, porque a resposta do modelo está em sincronia com as requisições que ele recebe. As predições normalmente são feitas uma-a-uma e a variável que costuma ser mais importante é a latência.
+
+A aplicação 1 (detecção de fraudes) é um exemplo típico que segue esse padrão. Assim que o usuário utiliza o seu cartão de crédito em um estabelecimento, os dados da transação são enviados para o modelo, o qual os processa e retorna a sua predição.
+
+Na prática, no padrão online, o modelo geralmente é servido como uma [API RESTful](https://pt.wikipedia.org/wiki/REST){ target = "_blank" }. A interação com o modelo se dá, então, por meio de [requisições HTTP](https://pt.wikipedia.org/wiki/Hypertext_Transfer_Protocol){ target = "_blank" }.
+
+A imagem acima mostra, de forma simplificada, como o modelo de detecção de fraudes poderia ser disponibilizado na prática. O sistema de cartão de crédito pode enviar uma requisição para o endpoint do modelo com os dados da transação e receber as predições como resposta. Com base na resposta, o sistema então decide se permite ou nega a transação.
+
+Em um tutorial futuro, discutiremos os detalhes de APIs RESTful e como criar APIs para os modelos. Por ora, você pode explorar algumas das ferramentas comumente utilizadas nesta etapa.
+
+???+ success "Algumas ferramentas que podem ser utilizadas para criar APIs para os modelos"
+
+    - [MLflow](https://mlflow.org/){ target = "_blank" }: ferramenta que serve para várias coisas, dentre elas, para servir modelos.
+    - [BentoML](https://www.bentoml.com/){ target = "_blank" }: ferramenta focada na etapa de implantação de modelos. É possível escrever e configurar as APIs e pode ter desempenho melhor que MLflow.
+    - [FastAPI](https://fastapi.tiangolo.com/){ target = "_blank" } e [Flask](https://flask.palletsprojects.com/en/2.3.x/){ target = "_blank" }: frameworks mais gerais utilizados para escrever APIs e que também podem ser utilizados para escrever as APIs de modelos.
+
+Existem algumas vantagens de se ter o modelo disponível como uma API RESTful.
+
+A primeira é que praticamente toda linguagem de programação tem bibliotecas para fazer requisições HTTP e processar as suas respostas. Dessa forma, não importa a linguagem utilizada na sua aplicação, ela conseguirá utilizar o modelo de ML. Por exemplo, em Python, a biblioteca mais utilizada é a [`requests`](https://pypi.org/project/requests/){ target = "_blank" }.
+
+A segunda vantagem é que é possível tirar proveito de toda maturidade dos provedores de soluções na nuvem ([AWS](https://aws.amazon.com/){ target = "_blank" }, [Google Cloud Platform](https://cloud.google.com/?hl=en){ target = "_blank" }, [Microsoft Azure](https://azure.microsoft.com/en-us){ target = "_blank" }) para criar o endpoint do modelo. Utilizando esses provedores, é relativamente simples de preparar o endpoint do modelo para suportar milhares (a milhões) de requisições por segundo, utilizando autoscaling de forma eficiente.
+
+## Padrão em batch
+
+O padrão em batch é aquele em que o modelo gera as predições para um conjunto de dados por vez (chamado de *batch*). Esses dados são acumulados e o modelo só é acionado quando determinado evento acontece. Nesse caso, a variável de interesse costuma ser o *throughput*.
+
+A aplicação 2 (recomendação de filmes) é um exemplo típico que segue esse padrão. À medida que os usuários utilizam o sistema, os dados das suas preferências são acumulados. O modelo, então, é acionado periodicamente para atualizar suas recomendações.
+
+Enquanto no padrão online o modelo costuma ser servido como uma API RESTful, no padrão em batch é comum existir um script de predição. Esse script é responsável por puxar os dados a serem utilizados — de um banco de dados, por exemplo —, carregar e executar o modelo, e salvar suas predições — novamente em um banco de dados, por exemplo. Por sua vez, a execução do script é disparada por um evento: seja um sinal que a aplicação envie, seja um horário do dia, ou algum outro gatilho.
+
+No exemplo da aplicação de streaming, o script de predição poderia ser programado para ser executado algumas vezes ao dia. A cada vez, ele puxaria os dados de uma fração de usuários e atualizaria suas recomendações de uma vez só.
+
+O padrão batch é apropriado para situações em que é necessário utilizar o modelo para processar um grande volume de dados e não há expectativa de que as predições estejam disponíveis instantaneamente. Nesses cenários, é possível de beneficiar-se das tecnologias de computação distribuída.
+
+O trabalho de predição de modelos de ML é facilmente paralelizável. Afinal, a predição para cada dado é independente das demais. Dessa forma, em vez de executar o script de predição em uma única máquina, é possível dividir os dados, processar cada fração em uma máquina diferente e agrupar as predições no final.
+
+Na prática, não é preciso se preocupar com os vários detalhes envolvidos em inicializar as máquinas, dividir os dados, coordenar os trabalhos de predição etc. Existem tecnologias maduras que já fazem todo o trabalho pesado por trás das cortinas. Basta escrever o script na linguagem adequada e executá-lo na infraestrutura correta.
+
+???+ success "Se você está interessado(a) em utilizar computação distribuída"
+    Algumas das tecnologias frequentemente citadas são [Spark](https://en.wikipedia.org/wiki/Apache_Spark){ target = "_blank" } e [Hadoop MapReduce](https://en.wikipedia.org/wiki/MapReduce){ target = "_blank" }. Em geral, essas tecnologias são utilizadas por meio de provedores de soluções na nuvem, como [AWS EMR](https://aws.amazon.com/emr/){ target = "_blank" }, [Google Cloud Dataproc](https://cloud.google.com/dataproc?hl=en){ target = "_blank" }, [Azure HDInsight](https://azure.microsoft.com/en-us/products/hdinsight){ target = "_blank" } e [Databricks](https://www.databricks.com/spark/getting-started-with-apache-spark){ target = "_blank" }.
+
+
