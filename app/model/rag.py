@@ -1,8 +1,10 @@
 """Arquivo `app/model/rag.py` no repositório. Modulo com a pipeline RAG. """
 
-import openai
 import os
+
 import chromadb
+import openai
+from openai.types.chat.chat_completion import ChatCompletion
 
 CONTEXT_PATH = os.path.join(os.path.dirname(__file__), "context")
 
@@ -19,7 +21,7 @@ class RagPipeline:
         chroma_client = chromadb.PersistentClient(path=CONTEXT_PATH)
         self.collection = chroma_client.get_collection(name="context")
 
-    def answer(self, question: str, stream: bool = False) -> str:
+    def answer(self, question: str, stream: bool = False) -> ChatCompletion:
         """Método principal.
 
         Implementa cada uma das etapas do RAG.
@@ -59,7 +61,7 @@ class RagPipeline:
         """
         return prompt
 
-    def generate_answer(self, prompt: str, stream: bool) -> str:
+    def generate_answer(self, prompt: str, stream: bool) -> ChatCompletion:
         """Envia a instrução ao LLM e retorna a resposta."""
         response = self.openai_client.chat.completions.create(
             messages=[{"role": "user", "content": prompt}],
