@@ -1,10 +1,10 @@
 # RAG `iafluente`
 
-Esse repositório acompanha o tutorial [Introdução a RAG]() do `iafluente`.
+Esse repositório acompanha o tutorial [Introdução a RAG](https://www.iafluente.com/tutoriais/introducao-rag) do `iafluente`.
 
 Você pode utilizar esse repositório para acompanhar o tutorial ou como ponto de partida para a sua própria aplicação de RAG.
 
-> A estrutura do repositório é uma réplica desse template, disponibilizado pelo Openlayer.
+> A estrutura do repositório é baseada [nesse template](https://github.com/openlayer-ai/templates/tree/main/python/llms/azure-openai-rag), disponibilizado pelo [Openlayer](https://www.openlayer.com/).
 
 ## Como executar
 
